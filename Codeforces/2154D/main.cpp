@@ -8,19 +8,48 @@ typedef long long ll;
 
 ll MOD = 1000000007;
 
-bool dfs(const unordered_map<int, vector<int>>& tree, unordered_map<int, int>& heightMap, vector<int>& path, int parent, int start, int target, int height) {
-    if (start == target) {
+bool dfs(
+    const unordered_map<int, vector<int>>& tree,
+    unordered_map<int, int>& heightMap,
+    unordered_map<int, int>& subtreeSizeMap,
+    unordered_map<int, int>& destroyMap,
+    unordered_map<int, int>& numAtHeight,
+    vector<int>& path,
+    int parent, int start, int target)
+{
+    if (start == target)
         path.push_back(start);
-    }
 
-    auto& nodes{ tree.at(start) };
-    bool hadTrue{ false };
+    int subtreeSize{ 0 };
+    int height{ 0 };
+    int nonPathHeight{ 0 };
+    int maxHeightNode{ 0 };
+    auto& nodes{ tree.at(start) }; bool hadTrue{ false };
 
     for (auto& node : nodes) {
         if (node == parent)
             continue;
-        hadTrue |= dfs(tree, heightMap, path, start, node, target, height + 1);
+        if (dfs(tree, heightMap, subtreeSizeMap, destroyMap, numAtHeight, path, start, node, target)) {
+            hadTrue = true;
+            if (heightMap[node] > height)
+                height = heightMap[node];
+        } else {
+            if (heightMap[node] > height) {
+                height = heightMap[node];
+                nonPathHeight = heightMap[node];
+                maxHeightNode = node;
+            } else if (heightMap[node] > nonPathHeight) {
+                nonPathHeight = max(heightMap[node], height);
+                maxHeightNode = node;
+            }
+        }
+        subtreeSize += subtreeSizeMap[node];
     }
+
+    subtreeSizeMap[start] = subtreeSize + 1;
+    destroyMap[start] = maxHeightNode;
+    heightMap[start] = height + 1;
+    numAtHeight[height + 1] += 1;
 
     if (hadTrue) {
         path.push_back(start);
@@ -39,7 +68,10 @@ int main() {
     while (k-- > 0) {
         int n{};
         unordered_map<int, vector<int>> tree;
-        unordered_map<int, int> heights;
+        unordered_map<int, int> heightMap;
+        unordered_map<int, int> numAtHeight;
+        unordered_map<int, int> subtreeSizeMap;
+        unordered_map<int, int> destroyMap;
         cin >> n;
         
         for (int i = 0; i < n - 1; ++i) {
@@ -50,7 +82,13 @@ int main() {
         }
 
         vector<int> path{}, destroy{};
-        dfs(tree, heights, path, -1, 1, n, 0);
+        dfs(tree, heightMap, subtreeSizeMap, destroyMap, numAtHeight, path, -1, 1, n);
+
+        int numDelete{ 0 };
+
+        for (auto& node : path) {
+            
+        }
 
         int ind{ 0 };
         while (true) {
