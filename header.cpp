@@ -1,16 +1,4 @@
-#include <algorithm>
-#include <cassert>
-#include <climits>
-#include <deque>
-#include <iostream>
-#include <limits.h>
-#include <map>
-#include <queue>
-#include <set>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-#include <vector>
+#include <bits/stdc++.h>
 
 using namespace std;
 
