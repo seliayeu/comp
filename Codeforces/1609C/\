@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef __uint128_t ulll;
+typedef unsigned long long ull;
+typedef long long ll;
+
+ll MOD = 1000000007;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int t;
+    cin >> t;
+
+    vector<bool> isPrime(1000001, true);
+    isPrime[0] = isPrime[1] = false;
+    for (int i = 2; i * i <= 1000001; i++) {
+        if (isPrime[i]) {
+            for (int j = i * i; j <= 1000001; j += i)
+                isPrime[j] = false;
+        }
+    }
+    vector<int> a;
+    a.reserve(2 * 100000);
+
+    while (t--) {
+        ull n, e;
+        cin >> n >> e;
+
+        a.resize(n);
+        unsigned numPairs{ 0 };
+        for (int i = 0; i < n; ++i)
+            cin >> a[i];
+        for (ull i = 0; i < n; ++i) {
+            if (a[i] != 1 && !isPrime[a[i]])
+                continue;
+
+            int prod{ a[i] };
+            auto k{ 1ULL };
+            while (i + e * k < n) {
+                auto next{ a[i + e * k] };
+                if (next == 1) {
+                    prod *= next;
+                    k++;
+                }
+            }
+            if (prod != 1)
+                numPairs += k - 1;
+        }
+
+        cout << numPairs << endl;
+        a.clear();
+    }
+}
