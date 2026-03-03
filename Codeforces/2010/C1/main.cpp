@@ -14,13 +14,19 @@ int main() {
     string s;
     cin >> s;
 
+    
+
     size_t ind{ 0 };
 
     while ((ind = s.find(s[0], ind + 1)) != string::npos) {
         size_t l{ 0 };
         size_t r{ ind };
-
-        while (s[l] == s[r] && l < ind && r < s.size()) {
+        // abcdeab
+        while (s[l] == s[r] && l <= ind && r < s.size()) {
+            if (l == ind) {
+                cout << "YES\n" << s.substr(ind) << "\n";
+                return 0;
+            }
             l++;
             r++;
             if (r == s.size()) {
@@ -29,10 +35,6 @@ int main() {
             }
         }
 
-        if (l == ind) {
-            cout << "YES\n" << s.substr(ind) << "\n";
-            return 0;
-        }
     }
     cout << "NO\n";
 }
